@@ -5,9 +5,10 @@ namespace AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\BufferedOutput;
+
+use AppBundle\Command\CustomApplication;
 
 /**
  * HTTP interface between Slack requests and our app.
@@ -86,7 +87,7 @@ class RunController extends Controller
      */
     private function getCommand($name)
     {
-        $app = new Application('GeekDpt Commander', 'alpha');
+        $app = new CustomApplication('GeekDpt Commander', 'alpha');
 
         $this->get('kernel')->getBundle('AppBundle')->registerCommands($app);
 
