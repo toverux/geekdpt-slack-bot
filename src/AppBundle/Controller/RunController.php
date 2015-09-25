@@ -31,14 +31,21 @@ class RunController extends Controller
 
             #=> Determine the command instance
             $command = explode(' ', $text)[0];
-            if($command == 'help') {
-                # whitelist help and rewrite command
-                $text = str_replace('help ', 'help gk:', $text);
-            } elseif($command == '') {
-                $command = 'list';
-            } else {
-                # otherwise prefix with "gk:"
-                $command = 'gk:'.$command;
+
+            switch($command) {
+                case 'help':
+                    # whitelist help and rewrite command
+                    $text = str_replace('help ', 'help gk:', $text);
+                    break;
+                case '':
+                case 'list':
+                    # whitelist list and support no command
+                    $command = 'list';
+                    break;
+                default:
+                    # otherwise prefix with "gk:"
+                    $command = 'gk:'.$command;
+                    break;
             }
 
             $command = $this->getCommand($command);
