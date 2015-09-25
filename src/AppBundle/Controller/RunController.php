@@ -48,10 +48,22 @@ class RunController extends Controller
             $command->run($input, $output);
         } catch(\Exception $ex) {
             #=> Forward all errors to the client
-            return new Response($ex->getMessage(), 400);
+            return new Response($this->markdownize($ex->getMessage()), 400);
         }
 
-        return new Response($output->fetch());
+        return new Response($this->markdownize($output->fetch()));
+    }
+
+    /**
+     * Surrounds input by markdown's code block.
+     *
+     * @param string $text The text to display as code.
+     *
+     * @return string
+     */
+    private function markdownize($text)
+    {
+        return "```\n{$text}\n```";
     }
 
     /**
