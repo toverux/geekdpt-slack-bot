@@ -25,9 +25,9 @@ class RunController extends Controller
      */
     public function runAction(Request $request)
     {
-        $content = (object) $request->request->all();
+        $slackdata = (object) $request->request->all();
 
-        $text = trim($content->text);
+        $text = trim($slackdata->text);
 
         #=> Determine the command instance
         $command = explode(' ', $text)[0];
@@ -75,6 +75,10 @@ class RunController extends Controller
         finally {
             if(!$input->hasParameterOption(['--no-markdown'])) {
                 $return = $this->markdownize($text, $return, $time);
+            }
+
+            if($input->hasParameterOption(['-b', '--broadcast'])) {
+                return new Response($slackdata->channel_name);
             }
 
             return new Response($return, $status);
