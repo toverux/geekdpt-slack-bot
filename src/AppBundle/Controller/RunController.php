@@ -86,7 +86,7 @@ class RunController extends Controller
      */
     private function getCommand($name)
     {
-        $app = new Application;
+        $app = new Application('GeekDpt Commander', 'alpha');
 
         $this->get('kernel')->getBundle('AppBundle')->registerCommands($app);
 
