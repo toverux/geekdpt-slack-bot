@@ -92,14 +92,15 @@ class RunController extends Controller
      */
     private function markdownize($command, $output, $time = null)
     {
-        $time = $time ? sprintf('took %fs', $time) : '';
+        $tags = '';
+        foreach([
+            ($command),
+            ($time ? sprintf('took %fs', $time) : '')
+        ] as $tag) {
+            if($tag) $tags .= "`{$tag}` ";
+        }
 
-        return <<<EOM
-`{$command}` `{$time}`
-```
-{$output}
-```
-EOM;
+        return "{$tags}\n```\n{$output}\n```";
     }
 
     /**
