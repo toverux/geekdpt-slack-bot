@@ -17,6 +17,6 @@ class FortuneCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->write(`fortune|cowsay`);
+        $output->write(`/usr/games/fortune|/usr/games/cowsay`);
     }
 }
