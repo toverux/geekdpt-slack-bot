@@ -35,7 +35,7 @@ class RunController extends Controller
                 # whitelist help and rewrite command
                 $text = str_replace('help ', 'help gk:', $text);
             } elseif($command == '') {
-                $command = 'help';
+                $command = 'list';
             } else {
                 # otherwise prefix with "gk:"
                 $command = 'gk:'.$command;
