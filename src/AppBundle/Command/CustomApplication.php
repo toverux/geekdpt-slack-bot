@@ -17,8 +17,8 @@ class CustomApplication extends Application
      */
     protected function getDefaultInputDefinition()
     {
-        return new InputDefinition(array(
+        return new InputDefinition([
             new InputArgument('command', InputArgument::REQUIRED, 'La commande a exécuter'),
-        ));
+        ]);
     }
 }
