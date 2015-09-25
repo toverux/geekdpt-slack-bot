@@ -55,17 +55,21 @@ class RunController extends Controller
             $output = new BufferedOutput;
 
             #=> Run the command
+            $start = microtime(true);
             $command->run($input, $output);
+            $time = microtime(true) - $start;
+
+            #=> Send back to Slack
+            return new Response($this->markdownize(
+                $text, $output->fetch(), $time
+            ));
+
         } catch(\Exception $ex) {
             #=> Forward all errors to the client
             return new Response($this->markdownize(
                 $text, $ex->getMessage()
             ), 400);
         }
-
-        return new Response($this->markdownize(
-            $text, $output->fetch()
-        ));
     }
 
     /**
@@ -75,14 +79,16 @@ class RunController extends Controller
      *
      * @return string
      */
-    private function markdownize($command, $output)
+    private function markdownize($command, $output, $time = null)
     {
-        return <<<EOL
-Résultat de la commande `{$command}` :
+        $time = $time ? sprintf('(temps=%fs)', $time) : '';
+
+        return <<<EOM
+Résultat de `{$command}` {$time} :
 ```
 {$output}
 ```
-EOL;
+EOM;
     }
 
     /**
