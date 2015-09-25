@@ -24,7 +24,7 @@ class RunController extends Controller
      */
     public function runAction(Request $request)
     {
-        $content = (object) parse_ini_string($request->getContent(), false, INI_SCANNER_RAW);
+        $content = (object) $request->request->all();
 
         try {
             $text = trim($content->text);
