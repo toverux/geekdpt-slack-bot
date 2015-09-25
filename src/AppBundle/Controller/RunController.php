@@ -81,10 +81,10 @@ class RunController extends Controller
      */
     private function markdownize($command, $output, $time = null)
     {
-        $time = $time ? sprintf('/ took %fs', $time) : '';
+        $time = $time ? sprintf('took %fs', $time) : '';
 
         return <<<EOM
-Résultat de `{$command}` {$time} :
+`{$command}` `{$time}` :
 ```
 {$output}
 ```
