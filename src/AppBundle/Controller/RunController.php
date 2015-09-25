@@ -84,7 +84,7 @@ class RunController extends Controller
         $time = $time ? sprintf('took %fs', $time) : '';
 
         return <<<EOM
-`{$command}` `{$time}` :
+`{$command}` `{$time}`
 ```
 {$output}
 ```
