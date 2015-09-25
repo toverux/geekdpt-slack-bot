@@ -81,7 +81,7 @@ class RunController extends Controller
 Résultat de la commande `{$command}` :
 ```
 {$output}
-```";
+```
 EOL;
     }
 
