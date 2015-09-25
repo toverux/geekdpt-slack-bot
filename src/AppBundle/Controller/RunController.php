@@ -50,6 +50,7 @@ class RunController extends Controller
             }
 
             $command = $this->getCommand($command);
+
             #=> Building I/O
             $input  = new ArgvInput($this->toArgv("dummy_command {$text}"));
             $output = new BufferedOutput;
@@ -75,7 +76,9 @@ class RunController extends Controller
     /**
      * Surrounds command output by markdown for better formatting.
      *
-     * @param string $output The output to display as code.
+     * @param string $command The command that has been issued
+     * @param string $output The output to display as code
+     * @param float $time Time taken in seconds
      *
      * @return string
      */
