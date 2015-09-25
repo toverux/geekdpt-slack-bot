@@ -27,49 +27,57 @@ class RunController extends Controller
     {
         $content = (object) $request->request->all();
 
+        $text = trim($content->text);
+
+        #=> Determine the command instance
+        $command = explode(' ', $text)[0];
+
+        switch($command) {
+            case 'help':
+                # whitelist help and rewrite command
+                $text = str_replace('help ', 'help gk:', $text);
+                break;
+            case '':
+            case 'list':
+                # whitelist list and support no command
+                $command = 'list';
+                break;
+            default:
+                # otherwise prefix with "gk:"
+                $command = 'gk:'.$command;
+                break;
+        }
+
+        #=> Building I/O
+        $input  = new ArgvInput($this->toArgv("dummy_command {$text}"));
+        $output = new BufferedOutput;
+
         try {
-            $text = trim($content->text);
-
-            #=> Determine the command instance
-            $command = explode(' ', $text)[0];
-
-            switch($command) {
-                case 'help':
-                    # whitelist help and rewrite command
-                    $text = str_replace('help ', 'help gk:', $text);
-                    break;
-                case '':
-                case 'list':
-                    # whitelist list and support no command
-                    $command = 'list';
-                    break;
-                default:
-                    # otherwise prefix with "gk:"
-                    $command = 'gk:'.$command;
-                    break;
-            }
-
             $command = $this->getCommand($command);
-
-            #=> Building I/O
-            $input  = new ArgvInput($this->toArgv("dummy_command {$text}"));
-            $output = new BufferedOutput;
 
             #=> Run the command
             $start = microtime(true);
             $command->run($input, $output);
             $time = microtime(true) - $start;
 
-            #=> Send back to Slack
-            return new Response($this->markdownize(
-                $text, $output->fetch(), $time
-            ));
+            #=> It's all good
+            $return = $output->fetch();
+            $status = 200;
+        }
 
-        } catch(\Exception $ex) {
+        catch(\Exception $ex) {
             #=> Forward all errors to the client
-            return new Response($this->markdownize(
-                $text, $ex->getMessage()
-            ), 400);
+            $time = 0;
+            $return = $ex->getMessage();
+            $status = 400;
+        }
+
+        finally {
+            if(!$input->hasParameterOption(['--no-markdown'])) {
+                $return = $this->markdownize($text, $return, $time);
+            }
+
+            return new Response($return, $status);
         }
     }
 
