@@ -17,7 +17,7 @@ class FortuneCommand extends ContainerAwareCommand implements FancyCommandInterf
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->write(`/usr/games/fortune|/usr/games/cowsay`);
+        $output->write(`/usr/games/fortune | /usr/games/cowsay -f $(ls /usr/share/cowsay/cows/ | shuf -n1)`);
     }
 
     public function getFancyStyle()
