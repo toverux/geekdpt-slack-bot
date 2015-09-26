@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class FortuneCommand extends ContainerAwareCommand
+class FortuneCommand extends ContainerAwareCommand implements FancyCommandInterface
 {
     protected function configure()
     {
@@ -18,5 +18,13 @@ class FortuneCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->write(`/usr/games/fortune|/usr/games/cowsay`);
+    }
+
+    public function getFancyStyle()
+    {
+        return [
+            'name'   => 'Fortune',
+            'avatar' => 'http://i.imgur.com/YpVWzJS.png'
+        ];
     }
 }

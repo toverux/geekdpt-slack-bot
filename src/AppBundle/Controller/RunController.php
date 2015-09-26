@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 use AppBundle\Command\CustomApplication;
+use AppBundle\Command\FancyCommandInterface;
 use AppBundle\SlackBot\Bot;
 
 /**
@@ -78,10 +79,16 @@ class RunController extends Controller
                 $return = $this->markdownize($text, $return, $time);
             }
 
-            if($input->hasParameterOption(['-s', '--share'])) {
+            if($input->hasParameterOption(['-s', '--share']) && is_object($command)) {
                 $sharer = $this->get('slack_bot.incoming_api_sender');
 
-                $bot = new Bot($slackdata->channel_name, $return);
+                if($command instanceof FancyCommandInterface) {
+                    $style = (object) $command->getFancyStyle();
+                    $bot = new Bot($slackdata->channel_name, $return, $style->name, $style->avatar);
+                } else {
+                    $bot = new Bot($slackdata->channel_name, $return);
+                }
+
                 $sharer->send($bot);
 
                 return new Response(null, 204);
