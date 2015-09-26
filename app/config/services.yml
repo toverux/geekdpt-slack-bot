@@ -1,9 +1,7 @@
-# Learn more about services, parameters and containers at
-# http://symfony.com/doc/current/book/service_container.html
 parameters:
-#    parameter_name: value
+    incoming_webhook_endpoint: https://hooks.slack.com/services/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
 
 services:
-#    service_name:
-#        class: AppBundle\Directory\ClassName
-#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+    slack_bot.incoming_api_sender:
+        class:     AppBundle\SlackBot\IncomingApiSender
+        arguments: [@buzz, %incoming_webhook_endpoint%]

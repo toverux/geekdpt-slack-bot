@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 use AppBundle\Command\CustomApplication;
+use AppBundle\SlackBot\Bot;
 
 /**
  * HTTP interface between Slack requests and our app.
@@ -77,8 +78,13 @@ class RunController extends Controller
                 $return = $this->markdownize($text, $return, $time);
             }
 
-            if($input->hasParameterOption(['-b', '--broadcast'])) {
-                return new Response($slackdata->channel_name);
+            if($input->hasParameterOption(['-s', '--share'])) {
+                $sharer = $this->get('slack_bot.incoming_api_sender');
+
+                $bot = new Bot($slackdata->channel_name, $return);
+                $sharer->send($bot);
+
+                return new Response(null, 204);
             }
 
             return new Response($return, $status);
@@ -114,7 +120,7 @@ class RunController extends Controller
      *
      * @return \Symfony\Component\Console\Command\Command
      *
-     * @throws \InvalidArgumentException When command name given does not exist
+     * @throws \InvalidArgumentException When the command does not exist
      */
     private function getCommand($name)
     {

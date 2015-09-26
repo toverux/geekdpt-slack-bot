@@ -20,7 +20,7 @@ class CustomApplication extends Application
     {
         return new InputDefinition([
             new InputArgument('command', InputArgument::REQUIRED, 'La commande a exécuter'),
-            new InputOption('--broadcast', '-b', InputOption::VALUE_NONE, 'Broadcast to current channel'),
+            new InputOption('--share', '-s', InputOption::VALUE_NONE, 'Share the command output to the current channel'),
             new InputOption('--no-markdown', null, InputOption::VALUE_NONE, 'Disable markdown on simple outputs'),
         ]);
     }
