@@ -85,9 +85,9 @@ class RunController extends Controller
 
         #=> Command tags
         $tags = array_merge([
-            $text,
-            sprintf('took %fs', $time),
-            sprintf('issuedby %s', $slackdata->user_name)
+            0          => $text,
+            'took'     => sprintf('%fs', $time),
+            'issuedby' => $slackdata->user_name
         ], $tags);
 
         #=> Determine command style
@@ -127,8 +127,9 @@ class RunController extends Controller
     private function markdownize($output, $codeSurround, array $tags)
     {
         $tagsstr = '';
-        foreach($tags as $tag) {
-            if($tag) $tagsstr .= "`{$tag}` ";
+        foreach($tags as $tagid => $tag) {
+            $tagid = is_numeric($tagid) ? '' : " {$tagid}";
+            if($tag) $tagsstr .= "`{$tagid}{$tag}` ";
         }
 
         $code = $codeSurround ? "\n```" : '';
