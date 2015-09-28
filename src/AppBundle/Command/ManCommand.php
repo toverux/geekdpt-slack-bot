@@ -47,7 +47,7 @@ class ManCommand extends ContainerAwareCommand implements FancyCommandInterface
         $entries = $em->getRepository('AppBundle:ManEntry')->findBy([], ['name' => 'asc']);
 
         $this->outputAsCode = false;
-        $output->write('*Manual entries :*');
+        $output->writeln('*Manual entries :*');
         foreach($entries as $entry) {
             $output->writeln(' - '.$entry->getName());
         }
