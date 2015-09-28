@@ -2,12 +2,13 @@
 
 namespace AppBundle\Command;
 
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ManCommand extends RADCommand implements FancyCommandInterface
+class ManCommand extends ContainerAwareCommand implements FancyCommandInterface
 {
     use FancyCommandTrait;
 
@@ -39,7 +40,9 @@ class ManCommand extends RADCommand implements FancyCommandInterface
 
     private function displayEntriesList(OutputInterface $output)
     {
-        $entries = $this->getDEMRepository('AppBundle:ManEntry')->findAll();
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+
+        $entries = $em->getRepository('AppBundle:ManEntry')->findAll();
 
         foreach($entries as $entry) {
             $output->writeln($entry->getName());
@@ -48,9 +51,9 @@ class ManCommand extends RADCommand implements FancyCommandInterface
 
     private function displayEntry(OutputInterface $output, $entryName)
     {
-        $Entries = $this->getDEMRepository('AppBundle:ManEntry');
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
-        if(!$entry = $Entries->findOneByName($entryName)) {
+        if(!$entry = $em->getRepository('AppBundle:ManEntry')->findOneByName($entryName)) {
             throw new \InvalidArgumentException("No manual entry named '{$entryName}'.");
         }
 
