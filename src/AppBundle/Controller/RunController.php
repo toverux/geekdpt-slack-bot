@@ -85,9 +85,9 @@ class RunController extends Controller
 
         #=> Command tags
         $tags = array_merge([
-            0          => $text,
-            'took'     => sprintf('%fs', $time),
-            'issuedby' => $slackdata->user_name
+            0        => $text,
+            'took'   => sprintf('%fs', $time),
+            'issuer' => $slackdata->user_name
         ], $tags);
 
         #=> Determine command style
