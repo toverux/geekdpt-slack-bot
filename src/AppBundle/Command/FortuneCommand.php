@@ -9,11 +9,21 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class FortuneCommand extends ContainerAwareCommand implements FancyCommandInterface
 {
+    use FancyCommandTrait;
+
+    public function getAvatar()
+    {
+        return [
+            'name'  => 'Fortune',
+            'image' => 'http://i.imgur.com/YpVWzJS.png'
+        ];
+    }
+
     protected function configure()
     {
         $this
             ->setName('gk:fortune')
-            ->setDescription('Ragots, citations et voyance.')
+            ->setDescription('Ragots, citations et voyance')
             ->addOption('--text', null, InputOption::VALUE_OPTIONAL, 'Enter a text manually');
     }
 
@@ -27,13 +37,5 @@ class FortuneCommand extends ContainerAwareCommand implements FancyCommandInterf
         } else {
             $output->write(`/usr/games/fortune | $randomcow`);
         }
-    }
-
-    public function getFancyStyle()
-    {
-        return [
-            'name'   => 'Fortune',
-            'avatar' => 'http://i.imgur.com/YpVWzJS.png'
-        ];
     }
 }

@@ -70,26 +70,30 @@ class RunController extends Controller
         catch(\Exception $ex) {
             #=> Forward all errors to the client
             $time = 0;
-            $return = $ex->getMessage();
+            $return = sprintf('%s — %s', get_class($ex), $ex->getMessage());
             $status = 400;
         }
 
         finally {
-            if(!$input->hasParameterOption(['--no-markdown'])) {
-                $return = $this->markdownize($text, $return, $time);
+            #=> Determine command style
+            if($command instanceof FancyCommandInterface) {
+                $avatar = (object) $command->getAvatar();
+                $style  = (object) $command->getOutputStyle();
+            } else {
+                $avatar = (object) ['name' => null, 'avatar' => null];
+                $style  = (object) ['outputAsCode' => true];
             }
 
+            #=> Enable (or not) auto markdown output
+            if(!$input->hasParameterOption(['--no-markdown'])) {
+                $return = $this->markdownize($text, $return, $style->outputAsCode, $time);
+            }
+
+            #=> Share (or not) command result
             if($input->hasParameterOption(['-s', '--share']) && is_object($command)) {
-                $sharer = $this->get('slack_bot.incoming_api_sender');
+                $bot = new Bot($slackdata->channel_name, $return, $avatar->name, $avatar->image);
 
-                if($command instanceof FancyCommandInterface) {
-                    $style = (object) $command->getFancyStyle();
-                    $bot = new Bot($slackdata->channel_name, $return, $style->name, $style->avatar);
-                } else {
-                    $bot = new Bot($slackdata->channel_name, $return);
-                }
-
-                $sharer->send($bot);
+                $this->get('slack_bot.incoming_api_sender')->send($bot);
 
                 return new Response(null, 204);
             }
@@ -103,11 +107,12 @@ class RunController extends Controller
      *
      * @param string $command The command that has been issued
      * @param string $output The output to display as code
+     * @param bool $codeSurround Wether the $output is displayed as code or not
      * @param float $time Time taken in seconds
      *
      * @return string
      */
-    private function markdownize($command, $output, $time = null)
+    private function markdownize($command, $output, $codeSurround, $time = null)
     {
         $tags = '';
         foreach([
@@ -117,7 +122,9 @@ class RunController extends Controller
             if($tag) $tags .= "`{$tag}` ";
         }
 
-        return "{$tags}\n```\n{$output}\n```";
+        $code = $codeSurround ? "\n```" : '';
+
+        return "{$tags}{$code}\n{$output}{$code}";
     }
 
     /**
