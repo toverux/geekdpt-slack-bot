@@ -56,6 +56,7 @@ class RunController extends Controller
 
         try {
             $command = $this->getCommand($command);
+            $command->setContainer($this->container);
 
             #=> Run the command
             $start = microtime(true);

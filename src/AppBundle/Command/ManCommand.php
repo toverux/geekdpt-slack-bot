@@ -31,16 +31,18 @@ class ManCommand extends ContainerAwareCommand implements FancyCommandInterface
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if($input->getOption('list')) {
+        $entryName = $input->getArgument('manual-entry');
+
+        if($input->getOption('list') || !$entryName) {
             $this->displayEntriesList($output);
         } else {
-            $this->displayEntry($output, $input->getArgument('manual-entry'));
+            $this->displayEntry($output, $entryName);
         }
     }
 
     private function displayEntriesList(OutputInterface $output)
     {
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $em = $this->getContainer()->get('doctrine')->getManager();
 
         $entries = $em->getRepository('AppBundle:ManEntry')->findAll();
 
@@ -51,7 +53,7 @@ class ManCommand extends ContainerAwareCommand implements FancyCommandInterface
 
     private function displayEntry(OutputInterface $output, $entryName)
     {
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $em = $this->getContainer()->get('doctrine')->getManager();
 
         if(!$entry = $em->getRepository('AppBundle:ManEntry')->findOneByName($entryName)) {
             throw new \InvalidArgumentException("No manual entry named '{$entryName}'.");
