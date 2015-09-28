@@ -55,6 +55,10 @@ class RunController extends Controller
         $input  = new ArgvInput($this->toArgv("dummy_command {$text}"));
         $output = new BufferedOutput;
 
+        $start = microtime(true);
+
+        $tags = [];
+
         try {
             $command = $this->getCommand($command);
             # ensure container is set
@@ -63,9 +67,7 @@ class RunController extends Controller
             }
 
             #=> Run the command
-            $start = microtime(true);
             $command->run($input, $output);
-            $time = microtime(true) - $start;
 
             #=> It's all good
             $return = $output->fetch();
@@ -74,57 +76,59 @@ class RunController extends Controller
 
         catch(\Exception $ex) {
             #=> Forward all errors to the client
-            $time = 0;
-            $return = sprintf('%s — %s', get_class($ex), $ex->getMessage());
+            $return = $ex->getMessage();
+            $tags[] = get_class($ex);
             $status = 400;
         }
 
-        finally {
-            #=> Determine command style
-            if($command instanceof FancyCommandInterface) {
-                $avatar = (object) $command->getAvatar();
-                $style  = (object) $command->getOutputStyle();
-            } else {
-                $avatar = (object) ['name' => null, 'avatar' => null];
-                $style  = (object) ['outputAsCode' => true];
-            }
+        $time = microtime(true) - $start;
 
-            #=> Enable (or not) auto markdown output
-            if(!$input->hasParameterOption(['--no-markdown'])) {
-                $return = $this->markdownize($text, $return, $style->outputAsCode, $time);
-            }
+        #=> Command tags
+        $tags = [
+            $text,
+            sprintf('took %fs', $time),
+            sprintf('issuedby %s', $slackdata->user_name)
+        ] + $tags;
 
-            #=> Share (or not) command result
-            if($input->hasParameterOption(['-s', '--share']) && is_object($command)) {
-                $bot = new Bot($slackdata->channel_name, $return, $avatar->name, $avatar->image);
-
-                $this->get('slack_bot.incoming_api_sender')->send($bot);
-
-                return new Response(null, 204);
-            }
-
-            return new Response($return, $status);
+        #=> Determine command style
+        if($command instanceof FancyCommandInterface) {
+            $avatar = (object) $command->getAvatar();
+            $style  = (object) $command->getOutputStyle();
+        } else {
+            $avatar = (object) ['name' => null, 'avatar' => null];
+            $style  = (object) ['outputAsCode' => true];
         }
+
+        #=> Enable (or not) auto markdown output
+        if(!$input->hasParameterOption(['--no-markdown'])) {
+            $return = $this->markdownize($return, $style->outputAsCode, $tags);
+        }
+
+        #=> Share (or not) command result
+        if($input->hasParameterOption(['-s', '--share']) && is_object($command)) {
+            $bot = new Bot($slackdata->channel_name, $return, $avatar->name, $avatar->image);
+
+            $this->get('slack_bot.incoming_api_sender')->send($bot);
+
+            return new Response(null, 204);
+        }
+
+        return new Response($return, $status);
     }
 
     /**
      * Surrounds command output by markdown for better formatting.
      *
-     * @param string $command The command that has been issued
      * @param string $output The output to display as code
      * @param bool $codeSurround Wether the $output is displayed as code or not
-     * @param float $time Time taken in seconds
      *
      * @return string
      */
-    private function markdownize($command, $output, $codeSurround, $time = null)
+    private function markdownize($output, $codeSurround, array $tags)
     {
-        $tags = '';
-        foreach([
-            ($command),
-            ($time ? sprintf('took %fs', $time) : '')
-        ] as $tag) {
-            if($tag) $tags .= "`{$tag}` ";
+        $tagsstr = '';
+        foreach($tags as $tag) {
+            if($tag) $tagsstr .= "`{$tag}` ";
         }
 
         $code = $codeSurround ? "\n```" : '';
