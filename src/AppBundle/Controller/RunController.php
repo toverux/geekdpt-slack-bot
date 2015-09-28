@@ -128,8 +128,8 @@ class RunController extends Controller
     {
         $tagsstr = '';
         foreach($tags as $tagid => $tag) {
-            $tagid = is_numeric($tagid) ? '' : " {$tagid}";
-            if($tag) $tagsstr .= "`{$tagid}{$tag}` ";
+            $tagid = is_numeric($tagid) ? '' : $tagid;
+            if($tag) $tagsstr .= "`{$tagid} {$tag}` ";
         }
 
         $code = $codeSurround ? "\n```" : '';
