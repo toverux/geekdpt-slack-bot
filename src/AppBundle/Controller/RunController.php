@@ -84,11 +84,11 @@ class RunController extends Controller
         $time = microtime(true) - $start;
 
         #=> Command tags
-        $tags = array_merge([
+        $tags = [
             $text,
             sprintf('took %fs', $time),
             sprintf('issuedby %s', $slackdata->user_name)
-        ], $tags);
+        ] + $tags;
 
         #=> Determine command style
         if($command instanceof FancyCommandInterface) {
@@ -133,7 +133,7 @@ class RunController extends Controller
 
         $code = $codeSurround ? "\n```" : '';
 
-        return "{$tags}{$code}\n{$output}{$code}";
+        return "{$tagsstr}{$code}\n{$output}{$code}";
     }
 
     /**
