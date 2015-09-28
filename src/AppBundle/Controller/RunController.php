@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -56,7 +57,10 @@ class RunController extends Controller
 
         try {
             $command = $this->getCommand($command);
-            $command->setContainer($this->container);
+            # ensure container is set
+            if($command instanceof ContainerAwareCommand) {
+                $command->setContainer($this->container);
+            }
 
             #=> Run the command
             $start = microtime(true);
