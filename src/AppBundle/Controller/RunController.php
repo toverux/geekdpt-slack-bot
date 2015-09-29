@@ -34,6 +34,7 @@ class RunController extends Controller
 
         #=> Determine the command instance
         if($command = $request->query->get('command')) {
+            $text = $text ? " {$text}" : '';
             $text = "{$command} {$text}";
         } else {
             $command = explode(' ', $text)[0];
@@ -168,7 +169,6 @@ class RunController extends Controller
      */
     private function toArgv($string)
     {
-        $string = trim($string);
         $out = '';
 
         $break = true;
