@@ -168,6 +168,7 @@ class RunController extends Controller
      */
     private function toArgv($string)
     {
+        $string = trim($string);
         $out = '';
 
         $break = true;
