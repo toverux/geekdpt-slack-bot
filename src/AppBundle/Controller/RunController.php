@@ -32,8 +32,10 @@ class RunController extends Controller
 
         $text = trim($slackdata->text);
 
-        #=> Determine the command instance
-        $command = explode(' ', $text)[0];
+        if(!$command = $request->query->get('command')) {
+            #=> Determine the command instance
+            $command = explode(' ', $text)[0];
+        }
 
         switch($command) {
             case 'help':
