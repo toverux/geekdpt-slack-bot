@@ -35,7 +35,7 @@ class RunController extends Controller
         #=> Determine the command instance
         if($command = $request->query->get('command')) {
             $text = $text ? " {$text}" : '';
-            $text = "{$command}{$text}";
+            $text = $command.$text;
         } else {
             $command = explode(' ', $text)[0];
         }
