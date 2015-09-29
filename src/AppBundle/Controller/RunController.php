@@ -32,8 +32,10 @@ class RunController extends Controller
 
         $text = trim($slackdata->text);
 
-        if(!$command = $request->query->get('command')) {
-            #=> Determine the command instance
+        #=> Determine the command instance
+        if($command = $request->query->get('command')) {
+            $text = substr("{$command} {$text}", 1);
+        } else {
             $command = explode(' ', $text)[0];
         }
 
