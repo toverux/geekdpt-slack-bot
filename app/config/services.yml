@@ -4,4 +4,4 @@ parameters:
 services:
     slack_bot.incoming_api_sender:
         class:     AppBundle\SlackBot\IncomingApiSender
-        arguments: [@buzz, %incoming_webhook_endpoint%]
+        arguments: ["@buzz", %incoming_webhook_endpoint%]

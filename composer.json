@@ -1,24 +1,26 @@
 {
-    "name": "symfony/framework-standard-edition",
+    "name": "toverux/geekdpt-slack-bot",
     "license": "MIT",
     "type": "project",
-    "description": "The \"Symfony Standard Edition\" distribution",
+    "description": "Slack Bot(s) for GeekDpt team",
     "autoload": {
-        "psr-4": { "": "src/" }
+        "psr-4": { "": "src/" },
+        "classmap": ["app/AppKernel.php", "app/AppCache.php"]
     },
     "require": {
-        "php": ">=5.3.9",
-        "symfony/symfony": "2.7.*",
-        "doctrine/orm": "^2.4.8",
-        "doctrine/doctrine-bundle": "~1.4",
-        "symfony/monolog-bundle": "~2.4",
-        "sensio/distribution-bundle": "~4.0",
+        "php": ">=5.5.9",
+        "symfony/symfony": "3.0.*",
+        "doctrine/orm": "^2.5",
+        "doctrine/doctrine-bundle": "^1.6",
+        "doctrine/doctrine-cache-bundle": "^1.2",
+        "symfony/monolog-bundle": "^2.8",
+        "sensio/distribution-bundle": "^5.0",
         "sensio/framework-extra-bundle": "^3.0.2",
-        "incenteev/composer-parameter-handler": "~2.0",
+        "incenteev/composer-parameter-handler": "^2.0",
         "sensio/buzz-bundle": "^1.0"
     },
     "require-dev": {
-        "sensio/generator-bundle": "~2.3"
+        "sensio/generator-bundle": "^3.0"
     },
     "scripts": {
         "post-install-cmd": [
@@ -27,8 +29,7 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::defineDirectoryStructure"
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
         ],
         "post-update-cmd": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
@@ -40,7 +41,7 @@
         ]
     },
     "config": {
-        "bin-dir": "bin"
+        "platform": { "php": "5.5.9" }
     },
     "extra": {
         "symfony-app-dir": "app",
@@ -50,9 +51,6 @@
         "symfony-assets-install": "relative",
         "incenteev-parameters": {
             "file": "app/config/parameters.yml"
-        },
-        "branch-alias": {
-            "dev-master": "2.7-dev"
         }
     }
 }

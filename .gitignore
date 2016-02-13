@@ -6,7 +6,6 @@
 /var/logs/*
 !var/cache/.gitkeep
 !var/logs/.gitkeep
-/build/
 /vendor/
 /bin/*
 !bin/console
