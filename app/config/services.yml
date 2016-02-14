@@ -1,7 +1,4 @@
-parameters:
-    incoming_webhook_endpoint: https://hooks.slack.com/services/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
-
 services:
-    slack_bot.incoming_api_sender:
-        class:     AppBundle\SlackBot\IncomingApiSender
-        arguments: ["@buzz", %incoming_webhook_endpoint%]
+    slack.incoming_api_sender:
+        class:     AppBundle\Slack\IncomingApiSender
+        arguments: ["@buzz", %slack_incoming_webhook_endpoint%]

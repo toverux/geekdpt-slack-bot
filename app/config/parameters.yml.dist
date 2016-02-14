@@ -6,3 +6,5 @@ parameters:
     database_password: ~
 
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    slack_incoming_webhook_endpoint: ~

@@ -1,8 +1,8 @@
 <?php
 
-namespace AppBundle\SlackBot;
+namespace AppBundle\Slack;
 
-class Bot implements \JsonSerializable
+class WebhookBot implements \JsonSerializable
 {
     private $channel;
 

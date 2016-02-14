@@ -1,10 +1,8 @@
 <?php
 
-namespace AppBundle\SlackBot;
+namespace AppBundle\Slack;
 
 use Buzz\Browser;
-
-use AppBundle\SlackBot\Bot;
 
 class IncomingApiSender
 {
@@ -19,10 +17,12 @@ class IncomingApiSender
         $this->apiEndpoint = $apiEndpoint;
     }
 
-    public function send(Bot $bot)
+    public function send(WebhookBot $bot)
     {
-        $this->browser->post($this->apiEndpoint, [
-            'Content-Type' => 'application/json'
-        ], json_encode($bot));
+        $this->browser->post(
+            $this->apiEndpoint,
+            ['Content-Type' => 'application/json'],
+            json_encode($bot)
+        );
     }
 }

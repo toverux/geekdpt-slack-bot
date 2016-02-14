@@ -10,13 +10,13 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 use AppBundle\Command\CustomApplication;
-use AppBundle\Command\FancyCommandInterface;
-use AppBundle\SlackBot\Bot;
+use AppBundle\Command\SlackBotCommandInterface;
+use AppBundle\Slack\WebhookBot;
 
 /**
  * HTTP interface between Slack requests and our app.
  */
-class RunController extends Controller
+class RunCommandController extends Controller
 {
     /**
      * HTTP Slack command endpoint.
@@ -96,7 +96,7 @@ class RunController extends Controller
         ], $tags);
 
         #=> Determine command style
-        if($command instanceof FancyCommandInterface) {
+        if($command instanceof SlackBotCommandInterface) {
             $avatar = (object) $command->getAvatar();
             $style  = (object) $command->getOutputStyle();
         } else {
@@ -111,9 +111,9 @@ class RunController extends Controller
 
         #=> Share (or not) command result
         if($input->hasParameterOption(['-s', '--share']) && is_object($command)) {
-            $bot = new Bot($slackdata->channel_name, $return, $avatar->name, $avatar->image);
+            $bot = new WebhookBot($slackdata->channel_name, $return, $avatar->name, $avatar->image);
 
-            $this->get('slack_bot.incoming_api_sender')->send($bot);
+            $this->get('slack.incoming_api_sender')->send($bot);
 
             return new Response(null, 204);
         }

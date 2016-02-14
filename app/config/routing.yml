@@ -1,4 +1,4 @@
 run_run:
     path:         /run
-    defaults:     { _controller: AppBundle:Run:run }
+    defaults:     { _controller: AppBundle:RunCommand:run }
     requirements: { method: POST }

@@ -7,7 +7,7 @@ namespace AppBundle\Command;
  * style on their output !
  * Recommended: FancyCommandTrait.
  */
-interface FancyCommandInterface
+interface SlackBotCommandInterface
 {
     /**
      * Avatar of the bot displayed on Slack.

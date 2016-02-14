@@ -2,7 +2,7 @@
 
 namespace AppBundle\Command;
 
-trait FancyCommandTrait
+trait SlackBotCommandTrait
 {
     protected $outputAsCode = true;
 
