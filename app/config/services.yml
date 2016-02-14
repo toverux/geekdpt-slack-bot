@@ -1,4 +1,4 @@
 services:
-    slack.incoming_api_sender:
-        class:     AppBundle\Slack\IncomingApiSender
+    slack.web_hooks.incoming_api_sender:
+        class:     AppBundle\Slack\WebHooks\IncomingApiSender
         arguments: ["@buzz", %slack_incoming_webhook_endpoint%]

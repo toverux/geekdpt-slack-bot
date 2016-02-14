@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Slack;
+namespace AppBundle\Slack\WebHooks;
 
 use Buzz\Browser;
 
@@ -17,7 +17,7 @@ class IncomingApiSender
         $this->apiEndpoint = $apiEndpoint;
     }
 
-    public function send(WebhookBot $bot)
+    public function send(WebHookBot $bot)
     {
         $this->browser->post(
             $this->apiEndpoint,

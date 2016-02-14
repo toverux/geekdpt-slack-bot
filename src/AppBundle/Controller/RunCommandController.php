@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 
 use AppBundle\Command\CustomApplication;
 use AppBundle\Command\SlackBotCommandInterface;
-use AppBundle\Slack\WebhookBot;
+use AppBundle\Slack\WebHooks\WebHookBot;
 
 /**
  * HTTP interface between Slack requests and our app.
@@ -111,9 +111,9 @@ class RunCommandController extends Controller
 
         #=> Share (or not) command result
         if($input->hasParameterOption(['-s', '--share']) && is_object($command)) {
-            $bot = new WebhookBot($slackdata->channel_name, $return, $avatar->name, $avatar->image);
+            $bot = new WebHookBot($slackdata->channel_name, $return, $avatar->name, $avatar->image);
 
-            $this->get('slack.incoming_api_sender')->send($bot);
+            $this->get('slack.web_hooks.incoming_api_sender')->send($bot);
 
             return new Response(null, 204);
         }
